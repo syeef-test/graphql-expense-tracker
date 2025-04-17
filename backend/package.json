@@ -4,7 +4,9 @@
   "description": "backend for graphql expense tracker",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon backend/index.js"
   },
   "author": "kazi",
   "license": "ISC",
@@ -20,5 +22,8 @@
     "graphql-passport": "^0.6.8",
     "mongoose": "^8.13.2",
     "passport": "^0.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
   }
 }
