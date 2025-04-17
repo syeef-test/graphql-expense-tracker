@@ -8,6 +8,7 @@
     "start": "node index.js",
     "dev": "nodemon backend/index.js"
   },
+  "type": "module",
   "author": "kazi",
   "license": "ISC",
   "dependencies": {

@@ -14,7 +14,7 @@ type User{
 type Query{
     users: [User!],
     authUser: User,
-    user(userId:ID!):user
+    user(userId:ID!):User
 }
 
 type Mutation{

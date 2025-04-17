@@ -1,4 +1,4 @@
-const transactions = [
+export const transactions = [
   {
     _id: "1",
     userId: "101",
@@ -81,7 +81,7 @@ const transactions = [
   },
 ];
 
-const users = [
+export const users = [
   {
     _id: "101",
     username: "john_doe",
@@ -115,5 +115,3 @@ const users = [
     gender: "Female",
   },
 ];
-
-module.exports = { transactions, users };
