@@ -8,6 +8,10 @@ import http from "http";
 
 import mergedResolvers from "./resolvers/index.js";
 import mergedTypeDefs from "./typeDefs/index.js";
+import dotenv from "dotenv";
+import mongoose from "mongoose";
+dotenv.config();
+import { connectDB } from "./db/connectDB.js";
 
 async function startApolloServer(typeDefs, resolvers) {
   const app = express();
@@ -28,6 +32,7 @@ async function startApolloServer(typeDefs, resolvers) {
   server.applyMiddleware({ app, path: "/" });
 
   await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));
+  await connectDB();
   console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
 }
 
