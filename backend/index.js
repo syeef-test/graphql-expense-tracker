@@ -5,6 +5,7 @@ import {
 } from "apollo-server-core";
 import express from "express";
 import http from "http";
+import cors from "cors"; // <-- added import for cors
 
 import mergedResolvers from "./resolvers/index.js";
 import mergedTypeDefs from "./typeDefs/index.js";
@@ -35,14 +36,22 @@ async function startApolloServer(typeDefs, resolvers) {
     console.log(err);
   });
 
+  // Add CORS middleware
+  app.use(
+    cors({
+      origin: "http://localhost:3000", // <-- Allow requests from your frontend (adjust if needed)
+      credentials: true, // <-- Allow cookies to be sent
+    })
+  );
+
   app.use(
     session({
       secret: process.env.SESSION_SECRET,
-      resave: false, // this option specifies whether to save the session to the store on every request
-      saveUninitialized: false, //option specifies whether to save uninitialized sessions to the store
+      resave: false,
+      saveUninitialized: false,
       cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 day
-        httpOnly: true, // this option prevents the cross-site scripting attacks
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+        httpOnly: true,
       },
       store: store,
     })
@@ -64,7 +73,11 @@ async function startApolloServer(typeDefs, resolvers) {
   });
 
   await server.start();
-  server.applyMiddleware({ app, path: "/" });
+  server.applyMiddleware({
+    app,
+    path: "/",
+    cors: false, // <-- disable Apollo's built-in CORS, since we already used express cors
+  });
 
   await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));
   await connectDB();
