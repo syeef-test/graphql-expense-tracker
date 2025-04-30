@@ -12,7 +12,6 @@ type User{
 
 
 type Query{
-    users: [User!],
     authUser: User,
     user(userId:ID!):User
 }
