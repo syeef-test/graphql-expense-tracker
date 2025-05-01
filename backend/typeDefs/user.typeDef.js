@@ -13,7 +13,8 @@ type User{
 
 type Query{
     authUser: User,
-    user(userId:ID!):User
+    user(userId:ID!):User,
+    #Todo add category statistics query
 }
 
 type Mutation{
