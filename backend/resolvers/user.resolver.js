@@ -1,5 +1,5 @@
 import { users } from "../dummyData/data.js";
-import User from "../models/User.js";
+import User from "../models/user.model.js";
 import bcrypt from "bcrypt";
 
 const userResolver = {
@@ -88,7 +88,7 @@ const userResolver = {
     },
   },
   Query: {
-    authUser: async (_, _, context) => {
+    authUser: async (parent, args) => {
       try {
         const user = await context.getUser();
         return user;

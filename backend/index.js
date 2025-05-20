@@ -18,7 +18,7 @@ import passport from "passport";
 import session from "express-session";
 import connectMongo from "connect-mongodb-session";
 import { buildContext } from "graphql-passport";
-import configurePassport from "./passport/passport.config.js";
+import { configurePassport } from "./passport/passport.config.js";
 configurePassport();
 
 async function startApolloServer(typeDefs, resolvers) {
