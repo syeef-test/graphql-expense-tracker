@@ -37,13 +37,23 @@ async function startApolloServer(typeDefs, resolvers) {
   });
 
   // Add CORS middleware
+  // Enhanced CORS configuration
+  // app.use(
+  //   cors({
+  //     origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
+  //     credentials: true,
+  //     methods: ["GET", "POST", "OPTIONS"],
+  //     allowedHeaders: ["Content-Type", "Authorization"],
+  //   })
+  // );
+
+  // Allow all origins with credentials
   app.use(
     cors({
-      origin: "http://localhost:3000", // <-- Allow requests from your frontend (adjust if needed)
-      credentials: true, // <-- Allow cookies to be sent
+      origin: true,
+      credentials: true,
     })
   );
-
   app.use(
     session({
       secret: process.env.SESSION_SECRET,
@@ -75,7 +85,7 @@ async function startApolloServer(typeDefs, resolvers) {
   await server.start();
   server.applyMiddleware({
     app,
-    path: "/",
+    path: "/graphql",
     cors: false, // <-- disable Apollo's built-in CORS, since we already used express cors
   });
 
