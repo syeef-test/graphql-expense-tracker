@@ -14,6 +14,9 @@ const categoryColorMap = {
 };
 
 const Card = ({ cardType }) => {
+  // let { category, amount, location, date, paymentType, description } = transaction;
+  // description = description[0]?.toUpperCase() + description.slice(1);
+  // category = category[0]?.toUpperCase() + category.slice(1);
   const cardClass = categoryColorMap[cardType];
 
   return (
