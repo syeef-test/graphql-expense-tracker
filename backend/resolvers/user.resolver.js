@@ -6,8 +6,9 @@ const userResolver = {
   Mutation: {
     signUp: async (_, { input }, context) => {
       try {
-        const { username, email, password, gender } = input;
-        if (!username || !email || !password || !gender) {
+        console.log("input", input);
+        const { username, name, password, gender } = input;
+        if (!username || !name || !password || !gender) {
           throw new Error("All fields are required");
         }
 
@@ -24,8 +25,8 @@ const userResolver = {
         const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${username}`;
 
         const newUser = new User({
+          name,
           username,
-          email,
           password: hashedPassword,
           gender,
           profilePicture: gender === "male" ? boyProfilePic : girlProfilePic,
@@ -43,26 +44,13 @@ const userResolver = {
     login: async (_, { input }, context) => {
       try {
         const { username, password } = input;
-        if (!username || !password) {
-          throw new Error("All fields are required");
-        }
-
-        // const user = await User.findOne({ username });
-        // if (!user) {
-        //   throw new Error("User not found");
-        // }
-
-        // const isMatch = await bcrypt.compare(password, user.password);
-        // if (!isMatch) {
-        //   throw new Error("Invalid credentials");
-        // }
-
+        if (!username || !password) throw new Error("All fields are required");
         const { user } = await context.authenticate("graphql-local", {
           username,
           password,
         });
+
         await context.login(user);
-        return user;
         return user;
       } catch (error) {
         console.log("Error in login:", error);
@@ -72,14 +60,14 @@ const userResolver = {
     logout: async (_, __, context) => {
       try {
         await context.logout();
-        req.session.destroy((err) => {
+        context.req.session.destroy((err) => {
           if (err) {
             console.log("Error destroying session:", err);
             throw new Error("Failed to logout");
           }
           console.log("Session destroyed successfully");
         });
-        res.clearCookie("connect.sid");
+        context.res.clearCookie("connect.sid");
         return { message: "Logged out successfully" };
       } catch (error) {
         console.log("Error in logout:", error);
