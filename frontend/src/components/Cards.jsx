@@ -7,7 +7,7 @@ const Cards = () => {
   // if (error) return <p>Error: {error.message}</p>;
   // if (loading) return <p>Loading...</p>;
 
-  console.log("Cards data", data);
+  //console.log("Cards data", data);
 
   //TODO => ADD RELATIONSHIPS
   return (
