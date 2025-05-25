@@ -1,7 +1,11 @@
 import { useMutation, useQuery } from "@apollo/client";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { GET_TRANSACTION } from "../graphql/queries/transaction.queries";
+import {
+  GET_TRANSACTION,
+  GET_TRANSACTIONS,
+  GET_TRANSACTIONS_STATISTICS,
+} from "../graphql/queries/transaction.queries";
 import toast from "react-hot-toast";
 import { UPDATE_TRANSACTION } from "../graphql/mutations/transaction.mutation";
 import TransactionFormSkeleton from "../components/skeleton/TransactionFormSkeleton";
@@ -15,10 +19,28 @@ const TransactionPage = () => {
 
   // console.log("Transaction Data:", data);
 
-  const [
-    updateTransaction,
-    { loading: updateingTransaction, error: updateingTransactionError },
-  ] = useMutation(UPDATE_TRANSACTION, {});
+  // const [
+  //   updateTransaction,
+  //   { loading: updateingTransaction, error: updateingTransactionError },
+  // ] = useMutation(UPDATE_TRANSACTION, {
+  //   refetchQueries: ["GetTransactions", "GetTransactionsStatistics"],
+  // });
+
+  const [updateTransaction, { loading: updateingTransaction }] = useMutation(
+    UPDATE_TRANSACTION,
+    {
+      refetchQueries: [
+        { query: GET_TRANSACTIONS }, // Use the actual query document
+        { query: GET_TRANSACTIONS_STATISTICS }, // Ensure this matches your stats query
+      ],
+      onCompleted: () => {
+        toast.success("Transaction updated successfully!");
+      },
+      onError: (error) => {
+        toast.error(`Failed to update transaction: ${error.message}`);
+      },
+    }
+  );
 
   const [formData, setFormData] = useState({
     description: data?.transaction?.description || "",
@@ -36,7 +58,7 @@ const TransactionPage = () => {
       await updateTransaction({
         variables: { input: { ...formData, amount, transactionId: id } },
       });
-      toast.success("Transaction updated successfully!");
+      //toast.success("Transaction updated successfully!");
     } catch (error) {
       console.error("Error updating transaction:", error);
       toast.error(
