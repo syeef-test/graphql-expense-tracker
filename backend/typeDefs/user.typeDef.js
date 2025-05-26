@@ -4,7 +4,7 @@ type User{
     username:String!,
     name:String!,
     password:String!,
-    profilePic:String,
+    profilePicture:String,
     gender:String!,
 }
 

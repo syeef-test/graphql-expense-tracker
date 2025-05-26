@@ -10,6 +10,7 @@ import { LOGOUT } from "../graphql/mutations/user.mutation";
 import toast from "react-hot-toast";
 
 import { GET_TRANSACTIONS_STATISTICS } from "../graphql/queries/transaction.queries";
+import { GET_AUTHENTICATED_USER } from "../graphql/queries/user.queries";
 import { useEffect, useState } from "react";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -47,7 +48,14 @@ const HomePage = () => {
     loading: transactionLoading,
     error: transactionError,
   } = useQuery(GET_TRANSACTIONS_STATISTICS);
-  console.log("Transaction Data:", data);
+
+  const {
+    data: authUserData,
+    loading: authUserDataLoading,
+    error: authUserDataError,
+  } = useQuery(GET_AUTHENTICATED_USER);
+  //console.log("Transaction Data:", data);
+  console.log("Auth User Data:", authUserData);
 
   const [chartData, setChartData] = useState({
     labels: [],
@@ -122,7 +130,7 @@ const HomePage = () => {
             Spend wisely, track wisely
           </p>
           <img
-            src={"https://tecdn.b-cdn.net/img/new/avatars/2.webp"}
+            src={authUserData?.authUser?.profilePicture}
             className="w-11 h-11 rounded-full border cursor-pointer"
             alt="Avatar"
           />
