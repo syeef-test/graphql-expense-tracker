@@ -15,8 +15,8 @@ const Cards = () => {
       userId: authUser?.authUser?._id,
     },
   });
-  console.log("Authenticated User", authUser.authUser._id);
-  console.log("User and Transactions Data", userAndTransactions);
+  //console.log("Authenticated User", authUser.authUser._id);
+  // console.log("User and Transactions Data", userAndTransactions);
 
   // if (error) return <p>Error: {error.message}</p>;
   // if (loading) return <p>Loading...</p>;

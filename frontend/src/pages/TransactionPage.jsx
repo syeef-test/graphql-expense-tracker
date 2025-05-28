@@ -17,7 +17,7 @@ const TransactionPage = () => {
     variables: { id: id },
   });
 
-  console.log("Transaction Data:", data);
+  //console.log("Transaction Data:", data);
 
   // console.log("Transaction Data:", data);
 
