@@ -16,6 +16,7 @@ export const LOGIN = gql`
       _id
       name
       username
+      profilePicture
     }
   }
 `;

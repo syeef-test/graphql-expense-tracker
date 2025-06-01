@@ -6,6 +6,9 @@ import { BrowserRouter } from "react-router-dom";
 import GridBackground from "./components/ui/GridBackground.jsx";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
+import { store } from "./store/store";
+import { Provider } from "react-redux";
+
 const client = new ApolloClient({
   //TODO =>Update the uri on production server
   uri: "http://127.0.0.1:4000/graphql", // The URL of the GraphQL backend server
@@ -15,12 +18,14 @@ const client = new ApolloClient({
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BrowserRouter>
-      <GridBackground>
-        <ApolloProvider client={client}>
-          <App />
-        </ApolloProvider>
-      </GridBackground>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <GridBackground>
+          <ApolloProvider client={client}>
+            <App />
+          </ApolloProvider>
+        </GridBackground>
+      </BrowserRouter>
+    </Provider>
   </StrictMode>
 );

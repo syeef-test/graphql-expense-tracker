@@ -1,18 +1,37 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import InputField from "../components/InputField";
 import { LOGIN } from "../graphql/mutations/user.mutation";
 import { useMutation } from "@apollo/client";
 import toast from "react-hot-toast";
 
+import { useDispatch } from "react-redux";
+import { setAuthUser } from "../store/authSlice";
+
 const LoginPage = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [loginData, setLoginData] = useState({
     username: "",
     password: "",
   });
 
-  const [login, { loading, error }] = useMutation(LOGIN, {
-    refetchQueries: ["GetAuthenticatedUser"],
+  // const [login, { loading, error }] = useMutation(LOGIN, {
+  //   refetchQueries: ["GetAuthenticatedUser"],
+  // });
+
+  const [login, { loading }] = useMutation(LOGIN, {
+    onCompleted: (data) => {
+      console.log("Login successful:", data.login);
+      if (data?.login) {
+        dispatch(setAuthUser(data.login));
+        navigate("/");
+      }
+    },
+    onError: (error) => {
+      toast.error("Login failed: " + error.message);
+    },
   });
 
   const handleChange = (e) => {

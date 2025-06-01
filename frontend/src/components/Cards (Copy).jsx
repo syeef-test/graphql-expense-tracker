@@ -6,25 +6,15 @@ import {
   GET_AUTHENTICATED_USER,
 } from "../graphql/queries/user.queries";
 
-import { useSelector } from "react-redux";
-
 const Cards = () => {
-  // const { data, loading, error } = useQuery(GET_TRANSACTIONS);
-  // const { data: authUser } = useQuery(GET_AUTHENTICATED_USER);
+  const { data, loading, error } = useQuery(GET_TRANSACTIONS);
+  const { data: authUser } = useQuery(GET_AUTHENTICATED_USER);
 
-  // const { data: userAndTransactions } = useQuery(GET_USER_AND_TRANSACTIONS, {
-  //   variables: {
-  //     userId: authUser?.authUser?._id,
-  //   },
-  // });
-
-  const authUser = useSelector((state) => state.auth.user);
-  const { data, loading, error } = useQuery(GET_TRANSACTIONS, {
-    skip: !authUser, // Skip query if not authenticated
+  const { data: userAndTransactions } = useQuery(GET_USER_AND_TRANSACTIONS, {
+    variables: {
+      userId: authUser?.authUser?._id,
+    },
   });
-
-  if (!authUser) return null;
-
   //console.log("Authenticated User", authUser.authUser._id);
   // console.log("User and Transactions Data", userAndTransactions);
 
@@ -33,6 +23,7 @@ const Cards = () => {
 
   //console.log("Cards data", data);
 
+  //TODO => ADD RELATIONSHIPS
   return (
     <div className="w-full px-10 min-h-[40vh]">
       <p className="text-5xl font-bold text-center my-10">History</p>

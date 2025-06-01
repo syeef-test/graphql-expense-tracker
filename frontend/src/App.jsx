@@ -10,31 +10,55 @@ import { useQuery } from "@apollo/client";
 import { GET_AUTHENTICATED_USER } from "./graphql/queries/user.queries.js";
 import { Toaster } from "react-hot-toast";
 
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setAuthUser, setLoading } from "./store/authSlice";
+
 function App() {
-  const { loading, data, error } = useQuery(GET_AUTHENTICATED_USER);
+  //const { loading, data, error } = useQuery(GET_AUTHENTICATED_USER);
   // console.log("data", data);
+
+  const dispatch = useDispatch();
+  const authUser = useSelector((state) => state.auth.user);
+
+  const { loading } = useQuery(GET_AUTHENTICATED_USER, {
+    onCompleted: (data) => {
+      if (data?.authUser) {
+        dispatch(setAuthUser(data.authUser));
+      }
+    },
+    onError: (error) => {
+      console.error("Error fetching authenticated user:", error);
+    },
+    skip: !authUser, // Skip if user is already in state
+  });
+
+  useEffect(() => {
+    if (loading) {
+      dispatch(setLoading());
+    }
+  }, [loading, dispatch]);
+
   if (loading) return null;
   return (
     <>
-      {data?.authUser && <Header />}
+      {authUser && <Header />}
       <Routes>
         <Route
           path="/"
-          element={data?.authUser ? <HomePage /> : <Navigate to="/login" />}
+          element={authUser ? <HomePage /> : <Navigate to="/login" />}
         />
         <Route
           path="/login"
-          element={!data.authUser ? <LoginPage /> : <Navigate to="/" />}
+          element={!authUser ? <LoginPage /> : <Navigate to="/" />}
         />
         <Route
           path="/signup"
-          element={!data.authUser ? <SignUpPage /> : <Navigate to="/" />}
+          element={!authUser ? <SignUpPage /> : <Navigate to="/" />}
         />
         <Route
           path="/transaction/:id"
-          element={
-            data.authUser ? <TransactionPage /> : <Navigate to="/login" />
-          }
+          element={authUser ? <TransactionPage /> : <Navigate to="/login" />}
         />
         <Route path="*" element={<NotFound />} />
       </Routes>

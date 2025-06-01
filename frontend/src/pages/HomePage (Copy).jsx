@@ -1,40 +1,61 @@
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+
 import Cards from "../components/Cards";
 import TransactionForm from "../components/TransactionForm";
+
 import { MdLogout } from "react-icons/md";
 import { useMutation, useQuery } from "@apollo/client";
 import { LOGOUT } from "../graphql/mutations/user.mutation";
 import toast from "react-hot-toast";
-import { GET_TRANSACTIONS_STATISTICS } from "../graphql/queries/transaction.queries";
-import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { logoutSuccess } from "../store/authSlice";
 
+import { GET_TRANSACTIONS_STATISTICS } from "../graphql/queries/transaction.queries";
+import { GET_AUTHENTICATED_USER } from "../graphql/queries/user.queries";
+import { useEffect, useState } from "react";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+// const chartData = {
+//   labels: ["Saving", "Expense", "Investment"],
+//   datasets: [
+//     {
+//       label: "%",
+//       data: [13, 8, 3],
+//       backgroundColor: [
+//         "rgba(75, 192, 192)",
+//         "rgba(255, 99, 132)",
+//         "rgba(54, 162, 235)",
+//       ],
+//       borderColor: [
+//         "rgba(75, 192, 192)",
+//         "rgba(255, 99, 132)",
+//         "rgba(54, 162, 235, 1)",
+//       ],
+//       borderWidth: 1,
+//       borderRadius: 30,
+//       spacing: 10,
+//       cutout: 130,
+//     },
+//   ],
+// };
+
 const HomePage = () => {
-  const dispatch = useDispatch();
-  const authUser = useSelector((state) => state.auth.user);
-  const isLoading = useSelector((state) => state.auth.isLoading);
-
-  // useEffect(() => {
-  //   console.log("Auth User Data:", {
-  //     exists: !!authUser,
-  //     profilePicture: authUser?.profilePicture,
-  //     fullObject: authUser,
-  //   });
-  // }, [authUser]);
-
-  const [logout, { loading: logoutLoading, client }] = useMutation(LOGOUT);
+  const [logout, { loading, error, client }] = useMutation(LOGOUT, {
+    refetchQueries: ["GetAuthenticatedUser"],
+  });
 
   const {
     data,
     loading: transactionLoading,
     error: transactionError,
-  } = useQuery(GET_TRANSACTIONS_STATISTICS, {
-    skip: !authUser, // Skip query if not authenticated
-  });
+  } = useQuery(GET_TRANSACTIONS_STATISTICS);
+
+  const {
+    data: authUserData,
+    loading: authUserDataLoading,
+    error: authUserDataError,
+  } = useQuery(GET_AUTHENTICATED_USER);
+  //console.log("Transaction Data:", data);
+  //console.log("Auth User Data:", authUserData);
 
   const [chartData, setChartData] = useState({
     labels: [],
@@ -91,19 +112,13 @@ const HomePage = () => {
 
   const handleLogout = async () => {
     try {
-      // 1. Reset store BEFORE logout to clear active queries
-      await client.resetStore();
-
-      // 2. Perform logout mutation
       await logout();
-
-      // 3. Update Redux state
-      dispatch(logoutSuccess());
-
+      //clear the apollo client cache from the docs
+      client.resetStore();
       toast.success("Logout successful");
     } catch (error) {
       console.error("Logout failed", error);
-      toast.error(`Logout failed: ${error.message}`);
+      toast.error("Logout failed", error.message);
     }
   };
 
@@ -115,26 +130,28 @@ const HomePage = () => {
             Spend wisely, track wisely
           </p>
           <img
-            src={authUser?.profilePicture}
+            src={authUserData?.authUser?.profilePicture}
             className="w-11 h-11 rounded-full border cursor-pointer"
             alt="Avatar"
           />
-          {!logoutLoading && (
+          {!loading && (
             <MdLogout
               className="mx-2 w-5 h-5 cursor-pointer"
               onClick={handleLogout}
             />
           )}
-          {logoutLoading && (
+          {/* loading spinner */}
+          {loading && (
             <div className="w-6 h-6 border-t-2 border-b-2 mx-2 rounded-full animate-spin"></div>
           )}
         </div>
         <div className="flex flex-wrap w-full justify-center items-center gap-6">
-          {data?.categoryStatistics?.length > 0 && (
-            <div className="h-[330px] w-[330px] md:h-[360px] md:w-[360px]">
+          {data?.categoryStatistics.length > 0 && (
+            <div className="h-[330px] w-[330px] md:h-[360px] md:w-[360px]  ">
               <Doughnut data={chartData} />
             </div>
           )}
+
           <TransactionForm />
         </div>
         <Cards />
@@ -142,5 +159,4 @@ const HomePage = () => {
     </>
   );
 };
-
 export default HomePage;
