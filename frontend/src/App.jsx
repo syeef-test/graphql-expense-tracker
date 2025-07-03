@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import SignUpPage from "./pages/Signup";
 import TransactionPage from "./pages/TransactionPage";
+import Budget from "./pages/BudgetPage.jsx";
 import NotFound from "./pages/NotFound";
 import Header from "./components/ui/Header";
 import { useQuery } from "@apollo/client";
@@ -59,6 +60,10 @@ function App() {
         <Route
           path="/transaction/:id"
           element={authUser ? <TransactionPage /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/budget"
+          element={authUser ? <Budget /> : <Navigate to="/login" />}
         />
         <Route path="*" element={<NotFound />} />
       </Routes>
