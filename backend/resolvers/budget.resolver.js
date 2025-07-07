@@ -2,24 +2,27 @@ import Budget from "../models/budget.model.js";
 
 const budgetResolver = {
   Mutation: {
-    budget: async (_, { input }, context) => {
+    setBudget: async (_, { input }, context) => {
       try {
         const { amount, fromdate, todate, threshold } = input;
-        console.log("input", input);
+        //console.log("input", input);
         if (!amount || !fromdate || !todate || !threshold) {
           throw new Error("All fields are required");
         }
 
-        // const existingBudget = await Budget.findOne({ userId, month, year });
-        // if (existingBudget) {
-        //     throw new Error("Budget for this month already exists");
-        // }
+        const existingBudget = await Budget.findOne({
+          userId: context.getUser()._id,
+        });
+        if (existingBudget) {
+          throw new Error("Budget for this user already exists");
+        }
 
         const newBudget = new Budget({
           amount,
           fromdate,
           todate,
           threshold,
+          userId: context.getUser()._id,
         });
 
         await newBudget.save();

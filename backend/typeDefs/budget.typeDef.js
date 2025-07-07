@@ -8,14 +8,17 @@ const budgetTypeDef = `#graphql
     todate: Date!
     status: String
     threshold:Float!
+    user:User!
+    userId: ID!
+    currentSpending: Float!
   }
 
   type Query {
-    budgets: [Budget]  # You can define some query here
+    getBudgets: [Budget!]!  
   }
 
   type Mutation {
-    budget(input: BudgetInput!): Budget
+    setBudget(input: BudgetInput!): Budget
   }
 
   input BudgetInput {

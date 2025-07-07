@@ -31,6 +31,16 @@ const budgetSchema = new mongoose.Schema(
       required: [true, "Threshold is required"],
       min: [0, "Threshold cannot be negative"],
     },
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    currentSpending: {
+      type: Number,
+      default: 0,
+      min: [0, "Current spending cannot be negative"],
+    },
   },
   {
     timestamps: true,

@@ -5,14 +5,16 @@ import InputField from "../components/InputField";
 import { useMutation } from "@apollo/client";
 import { BUDGET } from "../graphql/mutations/budget.mutation";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const BudgetPage = () => {
   const [budgetData, setBudgetData] = useState({
     amount: "",
     fromdate: "",
     todate: "",
-    threshold: "",
+    threshold: 80,
   });
+  const navigate = useNavigate();
 
   const [budget, { loading, error }] = useMutation(BUDGET, {
     refetchQueries: ["GetAuthenticatedUser"],
@@ -22,6 +24,15 @@ const BudgetPage = () => {
     e.preventDefault();
     try {
       // await budget({ variables: { input: budgetData } });
+      let thresholdValue = parseFloat(budgetData.threshold);
+      if (!thresholdValue || thresholdValue < 20) {
+        toast.error("Threshold must be at least 20.");
+        return;
+      }
+      if (!budgetData.amount || !budgetData.fromdate || !budgetData.todate) {
+        toast.error("Please fill in all fields.");
+        return;
+      }
       await budget({
         variables: {
           input: {
@@ -31,6 +42,8 @@ const BudgetPage = () => {
           },
         },
       });
+      toast.success(`Succesfully created budget.`);
+      navigate("/");
     } catch (error) {
       console.error("Error creating budget:", error);
       toast.error(`Error creating budget: ${error.message}`);
@@ -87,6 +100,7 @@ const BudgetPage = () => {
                 id="threshold"
                 name="threshold"
                 type="number"
+                placeholder="Minimum 20"
                 value={budgetData.threshold}
                 onChange={handleChange}
               />
