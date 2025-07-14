@@ -1,6 +1,9 @@
 import Budget from "../models/budget.model.js";
 
 const budgetResolver = {
+  Query: {
+    getBudgets: (_, args, context) => Budget.find({ userId: context.userId }),
+  },
   Mutation: {
     setBudget: async (_, { input }, context) => {
       try {
