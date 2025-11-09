@@ -9,6 +9,14 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 import { store } from "./store/store";
 import { Provider } from "react-redux";
 
+import { loadErrorMessages, loadDevMessages } from "@apollo/client/dev";//
+
+if (process.env.NODE_ENV !== "production") {//
+  loadDevMessages();
+  loadErrorMessages();
+}
+
+
 const client = new ApolloClient({
   //TODO =>Update the uri on production server
   uri: "http://127.0.0.1:4000/graphql", // The URL of the GraphQL backend server

@@ -5,6 +5,7 @@ import InputField from "../components/InputField";
 import { useMutation } from "@apollo/client";
 import { SIGN_UP } from "../graphql/mutations/user.mutation";
 import toast from "react-hot-toast";
+import { GET_AUTHENTICATED_USER } from "../graphql/queries/user.queries";
 
 const SignUpPage = () => {
   const [signUpData, setSignUpData] = useState({
@@ -15,7 +16,7 @@ const SignUpPage = () => {
   });
 
   const [signup, { loading, error }] = useMutation(SIGN_UP, {
-    refetchQueries: ["GetAuthenticatedUser"],
+    refetchQueries: [{query:"GET_AUTHENTICATED_USER"}],
   });
 
   const handleSubmit = async (e) => {
