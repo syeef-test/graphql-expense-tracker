@@ -19,7 +19,7 @@ if (process.env.NODE_ENV !== "production") {//
 
 const client = new ApolloClient({
   //TODO =>Update the uri on production server
-  uri: "https://graphql-expense-tracker-backend.vercel.app:4000/graphql", // The URL of the GraphQL backend server
+  uri: "https://graphql-expense-tracker-backend.vercel.app/graphql", // The URL of the GraphQL backend server
   cache: new InMemoryCache(), // Apollo client uses to cache query results after fetching them
   credentials: "include", //This tells Apollo Client to include cookies in every requests
 });
