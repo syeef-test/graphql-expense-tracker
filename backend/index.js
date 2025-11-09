@@ -70,6 +70,11 @@ async function startApolloServer(typeDefs, resolvers) {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  app.get("/", (req, res) => {
+  res.send("Server is running successfully");
+  });
+
+
   const server = new ApolloServer({
     typeDefs,
     resolvers,
@@ -89,9 +94,11 @@ async function startApolloServer(typeDefs, resolvers) {
     cors: false, // <-- disable Apollo's built-in CORS, since we already used express cors
   });
 
-  await new Promise((resolve) => httpServer.listen({ port: 4000 }, resolve));
+  const PORT = process.env.PORT || 4000;
   await connectDB();
-  console.log(`🚀 Server ready at http://localhost:4000${server.graphqlPath}`);
+  await new Promise((resolve) => httpServer.listen(PORT, resolve));
+  console.log(`🚀 Server ready at port ${PORT} -> ${server.graphqlPath}`);
+
 }
 
 startApolloServer(mergedTypeDefs, mergedResolvers);
